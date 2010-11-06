@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:common="http://schemas.android.com/apk/res/com.jfo.common"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/hello" />
+	<Button android:text="TabBottom" android:id="@+id/Button01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	<Button android:text="TabHeader" android:id="@+id/Button02"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	<Button android:text="PopupMenu" android:id="@+id/Button03"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	<Button android:text="@+id/Button04" android:id="@+id/Button04"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	<com.jfo.common.ToggleView android:id="@+id/toggle"
+		common:backgroundOn="@drawable/mode_stack" common:backgroundOff="@drawable/mode_grid"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		common:initOn="false" />
+	<ImageView android:id="@+id/ImageView01"
+	    android:background="@drawable/mode_grid"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" />
+</LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <declare-styleable name="ToggleView">
+        <attr name="backgroundOff" format="reference|color" />
+        <attr name="backgroundOn" format="reference|color" />
+        <attr name="initOn" format="boolean" />
+    </declare-styleable>
+</resources>

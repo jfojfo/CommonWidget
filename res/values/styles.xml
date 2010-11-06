@@ -1,0 +1,7 @@
+<resources>
+    <style name="ToggleViewStyle">
+        <item name="backgroundOff">@drawable/mode_grid</item>
+        <item name="backgroundOn">@drawable/mode_stack</item>
+        <item name="initOn">false</item>
+    </style>
+</resources>
