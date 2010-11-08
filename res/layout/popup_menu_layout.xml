@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="wrap_content"
+	android:layout_height="wrap_content" android:minWidth="99dip" >
+	<ListView android:id="@+id/popup_content"
+	    android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="12dip"
+        android:paddingRight="12dip"
+        android:paddingTop="9dip"
+        android:paddingBottom="21dip"
+        android:background="@drawable/popup"
+        style="@style/PopupMenuStyle" />
+	<ImageView android:id="@+id/popup_bottom"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="-15dip"
+		android:layout_marginLeft="15dip"
+		android:background="@drawable/popup_triangle_bottom" />
+</LinearLayout>

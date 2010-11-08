@@ -4,4 +4,19 @@
         <item name="backgroundOn">@drawable/mode_stack</item>
         <item name="initOn">false</item>
     </style>
+
+    <style name="ToggleViewStyle">
+        <item name="popupBottom">@drawable/popup_triangle_bottom</item>
+        <item name="popupContent">@drawable/popup</item>
+        <item name="popupOptionSelected">@drawable/popup_option_selected</item>
+    </style>
+
+	<style name="PopupMenuStyle" parent="android:Widget.ListView">
+		<item name="android:listSelector">@drawable/popup_option_selected</item>
+		<item name="android:cacheColorHint">@null</item>
+		<item name="android:divider">@null</item>
+		<item name="android:fadingEdge">none</item>
+		<item name="android:drawSelectorOnTop">false</item>
+	</style>
+
 </resources>

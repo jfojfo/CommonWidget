@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="myarray">
+        <item>CPU usage</item>
+        <item>Network usage</item>
+        <item>GPS usage</item>
+        <item>Sensor usage</item>
+    </string-array>
+    
+    <array name="myicon">
+        <item>@drawable/ic_tab_new</item>
+        <item>@drawable/ic_tab_new</item>
+        <item>@drawable/ic_tab_new</item>
+        <item>@drawable/ic_tab_new</item>
+    </array>
+</resources>

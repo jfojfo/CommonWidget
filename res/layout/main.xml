@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:common="http://schemas.android.com/apk/res/com.jfo.common"
+	android:id="@+id/root"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	<TextView android:layout_width="fill_parent"
@@ -11,7 +12,7 @@
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 	<Button android:text="PopupMenu" android:id="@+id/Button03"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-	<Button android:text="@+id/Button04" android:id="@+id/Button04"
+	<Button android:text="test" android:id="@+id/Button04"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 	<com.jfo.common.ToggleView android:id="@+id/toggle"
 		common:backgroundOn="@drawable/mode_stack" common:backgroundOff="@drawable/mode_grid"
@@ -20,4 +21,30 @@
 	<ImageView android:id="@+id/ImageView01"
 	    android:background="@drawable/mode_grid"
 		android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		
+		
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="50dip"
+    android:background="#000088"
+    android:gravity="center"
+    >
+    <ImageView
+        android:background="@drawable/ic_tab_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+    />
+    <TextView
+        android:text="jfojfojfojfo"
+        android:textColor="#00FF00"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip"
+    />
+</LinearLayout>
+
+
 </LinearLayout>
