@@ -3,7 +3,6 @@ package com.jfo.common;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,15 +29,18 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
     private View mBottomView;
     private int mBottomPadding = 15;
     private int mBottomViewWidth;
-    
+
     public PopupMenu(Context context) {
         this(context, 0);
     }
     
     public PopupMenu(Context context, int styleRes) {
+        // don't use android.R.attr.popupWindowStyle for styleAttr ==> will introduce a background
+        //super(context, null, android.R.attr.popupWindowStyle);
         super(context, null, 0);
         
-        // don't use android.R.attr.popupWindowStyle for styleAttr ==> will introduce a background
+        if (styleRes == 0)
+            styleRes = R.style.PopupMenuStyle;
         TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.PopupMenu, 0, styleRes);
 
@@ -53,7 +56,7 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
 
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
-        mMenu = mInflater.inflate(R.layout.popup_menu_layout2, null);
+        mMenu = mInflater.inflate(R.layout.popup_menu_layout, null);
         
         mList = (ListView) mMenu.findViewById(R.id.popup_content);
         mList.setBackgroundDrawable(bkgContent);
@@ -86,33 +89,28 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
         // the left bottom corner of popup menu is (x0,y0), the popup point is (x1,y1).
         // then setOffset(x1-x0, y1-y0)
         setOffset(offsetX, offsetY);
+        
+        // if not set to true, ListView will not respond to onItemClick
+        setFocusable(true);
     }
 
-    /*
-    public PopupMenu() {
-        this(null, 0, 0);
-    }
-
-    public PopupMenu(View contentView) {
-        this(contentView, 0, 0);
-    }
-
-    public PopupMenu(int width, int height) {
-        this(null, width, height);
-    }
-
-    public PopupMenu(View contentView, int width, int height) {
-        this(contentView, width, height, false);
-    }
-
-    public PopupMenu(View contentView, int width, int height, boolean focusable) {
-        super(contentView, width, height, focusable);
-    }
-    */
-    
     // this is called when the touch event is not dealt with by any child
     public boolean onTouch(View v, MotionEvent event) {
-        Log.e(TAG, "click outside of PopupMenu, dismiss the PopupMenu");
+//        final int x = (int) event.getX();
+//        final int y = (int) event.getY();
+//
+//        if ((event.getAction() == MotionEvent.ACTION_DOWN)
+//                && ((x < 0) || (x >= getWidth()) || (y < 0) || (y >= getHeight()))) {
+//            dismiss();
+//            return true;
+//        } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+//            dismiss();
+//            Log.d(TAG, "click outside of PopupMenu, dismiss the PopupMenu");
+//            return true;
+//        } else {
+//            return false;
+//        }
+        Log.d(TAG, "click outside of PopupMenu, dismiss the PopupMenu");
         dismiss();
         return false;
     }
@@ -132,7 +130,61 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
         lp.leftMargin = margin;
         mBottomView.setLayoutParams(lp);
         
-        this.showAtLocation(parent, Gravity.LEFT | Gravity.BOTTOM, x, y);
+        showAtLocation(parent, Gravity.LEFT | Gravity.BOTTOM, x, y);
+    }
+    
+    /**
+     * <p>Show this popup menu at the left top corner of parent view.</p>
+     */
+    public void showAbove(View parent) {
+        showAbove(parent, 0, 0);
+    }
+
+    /**
+     * <p>Show this popup menu at the center top of parent view.</p>
+     */
+    public void showCenterAbove(View parent) {
+        if (parent != null) {
+            int w = parent.getWidth();
+            if (w >= 0)
+                showAbove(parent, w / 2, 0);
+        }
+    }
+
+    /**
+     * <p>Show this popup menu above parent view, 
+     * offset to xp percent of parent view's width,
+     * and yp percent of height.
+     * The left top corner is (0,0).</p>
+     * 
+     * @param parent parent view
+     * @param xp percent of offset to parent's width in horizontal
+     * @param yp percent of offset to parent's height in vertical
+     */
+    public void showAbove(View parent, double xp, double yp) {
+        if (parent != null) {
+            int w = parent.getWidth() < 0 ? 0 : parent.getWidth();
+            int h = parent.getHeight() < 0 ? 0 : parent.getHeight();
+            int dw = (int)(w * xp);
+            int dh = (int)(h * yp);
+            showAbove(parent, dw, dh);
+        }
+    }
+
+    /**
+     * <p>Show this popup menu above parent view, with (dx,dy) offset, 
+     * the left top corner is (0,0).</p>
+     * 
+     * @param parent parent view
+     * @param dx offset in x coordination
+     * @param dy offset in y coordination
+     */
+    public void showAbove(View parent, int dx, int dy) {
+        if (parent != null) {
+            int[] location = { 0, 0 };
+            parent.getLocationOnScreen(location);
+            showAt(parent, location[0] + dx, location[1] + dy);
+        }
     }
     
     private int[] adjust(int x, int y) {
@@ -219,6 +271,10 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
             setIcons(icons);
         }
     }
+    
+    public void setOnItemClickListener(AdapterView.OnItemClickListener l) {
+        mList.setOnItemClickListener(l);
+    }
 
     private class PopupMenuItemAdapter extends BaseAdapter {
         private class Data {
@@ -268,7 +324,6 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
             text.setText(d.text);
             return convertView;
         }
-        
     }
 
 }

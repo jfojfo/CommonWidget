@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Toast;
 
-public class PopupMenuActivity extends Activity implements View.OnTouchListener {
+public class PopupMenuActivity extends Activity 
+        implements View.OnTouchListener, AdapterView.OnItemClickListener {
+    
     PopupMenu menu;
+    Button btn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -17,6 +22,8 @@ public class PopupMenuActivity extends Activity implements View.OnTouchListener 
 
         setContentView(R.layout.template);
         findViewById(R.id.root).setOnTouchListener(this);
+        btn = (Button) findViewById(R.id.Button01);
+        btn.setOnTouchListener(this);
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -25,19 +32,27 @@ public class PopupMenuActivity extends Activity implements View.OnTouchListener 
         if (menu == null) {
             String[] array = {"patpatpatpat", "ok", "another", "jfo"};
             int[] icons = {R.drawable.ic_tab_new, R.drawable.ic_tab_new, R.drawable.ic_tab_new, R.drawable.ic_tab_new};
-            menu = new PopupMenu(this, R.style.PopupMenuStyle);
+            menu = new PopupMenu(this);
             menu.setTexts(array);
             //menu.setTexts(R.array.myarray);
             //menu.setIcons(icons);
             //menu.setIcons(R.array.myicon);
             menu.setWidth(200);
-            menu.showAt(v, x, y);
+            menu.setOnItemClickListener(this);
         }
-        else {
+        if (v == btn)
+            //menu.showCenterAbove(v);
+            //menu.showAbove(v, 20, -10);
+            menu.showAbove(v, 0.5, 0.5);
+        else
             menu.showAt(v, x, y);
-        }
         Toast.makeText(this, "Show at:" + x + "," + y, Toast.LENGTH_SHORT).show();
         return false;
+    }
+
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(this, "clicked:" + position, Toast.LENGTH_SHORT).show();
+        menu.dismiss();
     }
 
 }
