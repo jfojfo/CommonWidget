@@ -1,46 +1,43 @@
 package com.jfo.common;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.view.Window;
+import android.widget.Toast;
 
-public class PopupMenuActivity extends Activity implements OnClickListener {
-    Button mBtn1, mBtn2, mBtn3, mBtn4;
-    
-    /** Called when the activity is first created. */
+public class PopupMenuActivity extends Activity implements View.OnTouchListener {
+    PopupMenu menu;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        mBtn1 = (Button) findViewById(R.id.Button01);
-        mBtn1.setOnClickListener(this);
-        mBtn2 = (Button) findViewById(R.id.Button02);
-        mBtn2.setOnClickListener(this);
-        mBtn3 = (Button) findViewById(R.id.Button03);
-        mBtn3.setOnClickListener(this);
-        mBtn4 = (Button) findViewById(R.id.Button04);
-        mBtn4.setOnClickListener(this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);      
+
+        setContentView(R.layout.template);
+        findViewById(R.id.root).setOnTouchListener(this);
     }
 
-    public void onClick(View v) {
-        switch (v.getId()) {
-        case R.id.Button01: {
-            break;
+    public boolean onTouch(View v, MotionEvent event) {
+        int x = (int)event.getRawX();
+        int y = (int)event.getRawY();
+        if (menu == null) {
+            String[] array = {"patpatpatpat", "ok", "another", "jfo"};
+            int[] icons = {R.drawable.ic_tab_new, R.drawable.ic_tab_new, R.drawable.ic_tab_new, R.drawable.ic_tab_new};
+            menu = new PopupMenu(this);
+            menu.setTexts(array);
+            //menu.setTexts(R.array.myarray);
+            //menu.setIcons(icons);
+            //menu.setIcons(R.array.myicon);
+            menu.setWidth(200);
+            menu.showAt(v, x, y);
         }
-        case R.id.Button02: {
-            break;
+        else {
+            menu.showAt(v, x, y);
         }
-        case R.id.Button03: {
-            break;
-        }
-        case R.id.Button04: {
-            break;
-        }
-        default:
-            break;
-        }
+        Toast.makeText(this, "Show at:" + x + "," + y, Toast.LENGTH_SHORT).show();
+        return false;
     }
+
 }

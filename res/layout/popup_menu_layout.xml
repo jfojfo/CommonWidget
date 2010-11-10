@@ -10,11 +10,11 @@
         android:paddingTop="9dip"
         android:paddingBottom="21dip"
         android:background="@drawable/popup"
-        style="@style/PopupMenuStyle" />
+        style="@style/PopupMenuListStyle" />
 	<ImageView android:id="@+id/popup_bottom"
 	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="-15dip"
-		android:layout_marginLeft="15dip"
+		android:layout_marginTop="-16dip"
+		android:layout_marginLeft="12dip"
 		android:background="@drawable/popup_triangle_bottom" />
 </LinearLayout>

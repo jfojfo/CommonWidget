@@ -3,6 +3,7 @@ package com.jfo.common;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,42 +25,55 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
     private ListView mList;
     private PopupMenuItemAdapter mAdapter;
     private int mOffsetX = 0, mOffsetY = 0;
-    private final int mScreenHeight;
+    private final int mScreenHeight, mScreenWidth;
+    private View mBottomView;
+    private int mBottomPadding = 15;
+    private int mBottomViewWidth;
     
     public PopupMenu(Context context) {
-        super(context, null, 0); // don't use android.R.attr.popupWindowStyle ==> will introduce a background
+        this(context, null);
+    }
+    
+    public PopupMenu(Context context, AttributeSet attrs) {
+        // don't use android.R.attr.popupWindowStyle ==> will introduce a background
+        this(context, attrs, 0);
+    }
+
+    public PopupMenu(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
         mMenu = mInflater.inflate(R.layout.popup_menu_layout, null);
         mList = (ListView) mMenu.findViewById(R.id.popup_content);
         mAdapter = new PopupMenuItemAdapter();
         mList.setAdapter(mAdapter);
+        mBottomView = mMenu.findViewById(R.id.popup_bottom);
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)mBottomView.getLayoutParams();
+        mBottomPadding = lp.leftMargin;
+        mBottomViewWidth = mBottomView.getBackground().getIntrinsicWidth();
 
         setContentView(mMenu);
-        setWidth(LayoutParams.WRAP_CONTENT);
-        setHeight(LayoutParams.WRAP_CONTENT);
+        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // dismiss this popup menu when touch outside of the menu area
         setOutsideTouchable(true);
         mMenu.setOnTouchListener(this);
-        
+
+        setAnimationStyle(R.style.Animation_PopupMenu);
+
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mScreenHeight = wm.getDefaultDisplay().getHeight();
+        mScreenWidth = wm.getDefaultDisplay().getWidth();
+        
         // the origin is the left top corner is (0,0).
         // the left bottom corner of popup menu is (x0,y0), the popup point is (x1,y1).
         // then setOffset(x1-x0, y1-y0)
-        setOffset(37, -10);
+        setOffset(21, -11);
     }
-    
+
     /*
-    public PopupMenu(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.listViewStyle);
-    }
-
-    public PopupMenu(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
     public PopupMenu() {
         this(null, 0, 0);
     }
@@ -95,8 +108,48 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
      * </p>
      */
     public void showAt(View parent, int x, int y) {
+        int[] v = adjust(x, y);
+        x = v[0];
+        y = v[1];
+        int margin = v[2];
+        
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)mBottomView.getLayoutParams();
+        lp.leftMargin = margin;
+        mBottomView.setLayoutParams(lp);
+        
+        this.showAtLocation(parent, Gravity.LEFT | Gravity.BOTTOM, x, y);
+    }
+    
+    private int[] adjust(int x, int y) {
         y = mScreenHeight - y;
-        this.showAtLocation(parent, Gravity.LEFT | Gravity.BOTTOM, x - mOffsetX, y + mOffsetY);
+        y += mOffsetY;
+        
+        int w = getWidth();
+        if (w < 0)
+            w = mScreenWidth;
+        int margin = mBottomPadding;
+        int left = x - w / 2;
+        int right = x + w / 2;
+        if (left < 0) {
+            x = 0;
+            margin = w / 2 + left - mOffsetX;
+        }
+        else if (right > mScreenWidth) {
+            x = mScreenWidth - w;
+            margin = w / 2 + (right - mScreenWidth) - mOffsetX;
+        }
+        else {
+            x = left;
+            margin = w / 2 - mOffsetX;
+        }
+
+        if (margin < mBottomPadding)
+            margin = mBottomPadding;
+        else if (margin + mBottomViewWidth + mBottomPadding > w)
+            margin = w - mBottomPadding - mBottomViewWidth;
+        
+        int[] v = {x, y, margin};
+        return v;
     }
     
     public void setOffset(int dx, int dy) {

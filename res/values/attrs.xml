@@ -9,7 +9,11 @@
     <declare-styleable name="PopupMenu">
         <attr name="popupBottom" format="reference" />
         <attr name="popupContent" format="reference" />
-        <attr name="popupOptionSelected" format="reference" />
+        <attr name="animStyle" format="reference" />
+        <attr name="popupOffsetX" format="dimension" />
+        <attr name="popupOffsetY" format="dimension" />
+        <attr name="overlay" format="dimension" />
+        <attr name="padding" format="dimension" />
     </declare-styleable>
 
 </resources>
