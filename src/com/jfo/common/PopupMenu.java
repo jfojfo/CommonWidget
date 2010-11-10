@@ -31,27 +31,42 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
     private int mBottomViewWidth;
     
     public PopupMenu(Context context) {
-        this(context, null);
+        this(context, 0);
     }
     
-    public PopupMenu(Context context, AttributeSet attrs) {
-        // don't use android.R.attr.popupWindowStyle ==> will introduce a background
-        this(context, attrs, 0);
-    }
-
-    public PopupMenu(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public PopupMenu(Context context, int styleRes) {
+        super(context, null, 0);
         
+        // don't use android.R.attr.popupWindowStyle for styleAttr ==> will introduce a background
+        TypedArray a = context.obtainStyledAttributes(
+                null, R.styleable.PopupMenu, 0, styleRes);
+
+        Drawable bkgContent = a.getDrawable(R.styleable.PopupMenu_popupContent);
+        Drawable bkgBottom = a.getDrawable(R.styleable.PopupMenu_popupBottom);
+        int animStyle = a.getResourceId(R.styleable.PopupMenu_animStyle, R.style.Animation_PopupMenu);
+        int offsetX = a.getDimensionPixelOffset(R.styleable.PopupMenu_popupOffsetX, 0);
+        int offsetY = a.getDimensionPixelOffset(R.styleable.PopupMenu_popupOffsetY, 0);
+        int overlay = a.getDimensionPixelSize(R.styleable.PopupMenu_overlay, 0);
+        int padding = a.getDimensionPixelOffset(R.styleable.PopupMenu_padding, 0);
+        
+        a.recycle();
+
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
-        mMenu = mInflater.inflate(R.layout.popup_menu_layout, null);
+        mMenu = mInflater.inflate(R.layout.popup_menu_layout2, null);
+        
         mList = (ListView) mMenu.findViewById(R.id.popup_content);
+        mList.setBackgroundDrawable(bkgContent);
         mAdapter = new PopupMenuItemAdapter();
         mList.setAdapter(mAdapter);
+        
         mBottomView = mMenu.findViewById(R.id.popup_bottom);
+        mBottomView.setBackgroundDrawable(bkgBottom);
+        mBottomPadding = padding;
+        mBottomViewWidth = bkgBottom.getIntrinsicWidth();
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)mBottomView.getLayoutParams();
-        mBottomPadding = lp.leftMargin;
-        mBottomViewWidth = mBottomView.getBackground().getIntrinsicWidth();
+        lp.topMargin = overlay;
+        mBottomView.setLayoutParams(lp);
 
         setContentView(mMenu);
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -61,7 +76,7 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
         setOutsideTouchable(true);
         mMenu.setOnTouchListener(this);
 
-        setAnimationStyle(R.style.Animation_PopupMenu);
+        setAnimationStyle(animStyle);
 
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mScreenHeight = wm.getDefaultDisplay().getHeight();
@@ -70,7 +85,7 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
         // the origin is the left top corner is (0,0).
         // the left bottom corner of popup menu is (x0,y0), the popup point is (x1,y1).
         // then setOffset(x1-x0, y1-y0)
-        setOffset(21, -11);
+        setOffset(offsetX, offsetY);
     }
 
     /*

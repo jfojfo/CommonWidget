@@ -25,7 +25,7 @@ public class PopupMenuActivity extends Activity implements View.OnTouchListener 
         if (menu == null) {
             String[] array = {"patpatpatpat", "ok", "another", "jfo"};
             int[] icons = {R.drawable.ic_tab_new, R.drawable.ic_tab_new, R.drawable.ic_tab_new, R.drawable.ic_tab_new};
-            menu = new PopupMenu(this);
+            menu = new PopupMenu(this, R.style.PopupMenuStyle);
             menu.setTexts(array);
             //menu.setTexts(R.array.myarray);
             //menu.setIcons(icons);
