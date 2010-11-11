@@ -2,11 +2,11 @@ package com.jfo.common;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-public class PopupMenu extends PopupWindow implements View.OnTouchListener {
+public class PopupMenu extends PopupWindow {
     private final static String TAG = "PopupMenu";
     private Context mContext;
     private LayoutInflater mInflater;
@@ -77,7 +77,7 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
 
         // dismiss this popup menu when touch outside of the menu area
         setOutsideTouchable(true);
-        mMenu.setOnTouchListener(this);
+//        mMenu.setOnTouchListener(this);
 
         setAnimationStyle(animStyle);
 
@@ -92,28 +92,31 @@ public class PopupMenu extends PopupWindow implements View.OnTouchListener {
         
         // if not set to true, ListView will not respond to onItemClick
         setFocusable(true);
+        // if background is null, will not respond to key event and touch event
+        // (back key has no responds, see PopupWindow.java::preparePopup()
+        this.setBackgroundDrawable(new BitmapDrawable());
     }
 
     // this is called when the touch event is not dealt with by any child
-    public boolean onTouch(View v, MotionEvent event) {
-//        final int x = (int) event.getX();
-//        final int y = (int) event.getY();
-//
-//        if ((event.getAction() == MotionEvent.ACTION_DOWN)
-//                && ((x < 0) || (x >= getWidth()) || (y < 0) || (y >= getHeight()))) {
-//            dismiss();
-//            return true;
-//        } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-//            dismiss();
-//            Log.d(TAG, "click outside of PopupMenu, dismiss the PopupMenu");
-//            return true;
-//        } else {
-//            return false;
-//        }
-        Log.d(TAG, "click outside of PopupMenu, dismiss the PopupMenu");
-        dismiss();
-        return false;
-    }
+//    public boolean onTouch(View v, MotionEvent event) {
+////        final int x = (int) event.getX();
+////        final int y = (int) event.getY();
+////
+////        if ((event.getAction() == MotionEvent.ACTION_DOWN)
+////                && ((x < 0) || (x >= getWidth()) || (y < 0) || (y >= getHeight()))) {
+////            dismiss();
+////            return true;
+////        } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+////            dismiss();
+////            Log.d(TAG, "click outside of PopupMenu, dismiss the PopupMenu");
+////            return true;
+////        } else {
+////            return false;
+////        }
+//        Log.d(TAG, "click outside of PopupMenu, dismiss the PopupMenu");
+//        dismiss();
+//        return false;
+//    }
 
     /**
      * <p>Show this popup menu at absolute position (x,y),
