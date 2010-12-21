@@ -113,7 +113,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
             switch (action & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN: {
                     if (mThumbDrawable != null)
-                        mThumbDrawable.selectDrawable(0);
+//                        mThumbDrawable.selectDrawable(0);
+                        mThumbDrawable.setState(new int[] { android.R.attr.state_pressed });
 
                     final float x = ev.getX();
                     if (!(mIsBeingDragged = inThumb((int) x, (int) ev.getY()))) {
@@ -141,7 +142,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mThumbDrawable != null)
-                        mThumbDrawable.selectDrawable(1);
+//                        mThumbDrawable.selectDrawable(1);
+                        mThumbDrawable.setState(new int[] { android.R.attr.state_enabled });
 
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
@@ -160,7 +162,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     if (mThumbDrawable != null)
-                        mThumbDrawable.selectDrawable(1);
+//                        mThumbDrawable.selectDrawable(1);
+                        mThumbDrawable.setState(new int[] { android.R.attr.state_enabled });
 
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
