@@ -3,7 +3,9 @@ package com.jfo.common;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
+import android.util.StateSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,9 +15,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class SlideButton extends FrameLayout implements View.OnClickListener {
-    protected ImageView mThumb;
-    protected LinearLayout mThumbScroller;
-    protected boolean mIsOn;
+    private ImageView mThumb;
+    private StateListDrawable mThumbDrawable = null;
+    private LinearLayout mThumbScroller;
+    private boolean mIsOn;
     private static final int INVALID_POINTER = -1;
     private boolean mIsBeingDragged = false;
     private boolean mIsBeingSlide = false;
@@ -46,7 +49,7 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.toggleview_layout, this, // we are the parent
+        inflater.inflate(R.layout.slidebutton_layout, this, // we are the parent
                 true);
         mThumb = (ImageView) findViewById(R.id.thumb);
         mThumbScroller = (LinearLayout) findViewById(R.id.thumb_scroller);
@@ -59,6 +62,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
         thumb = mThumb.getBackground();
         if (background != null && thumb != null)
             mScrollLength = background.getIntrinsicWidth() - thumb.getIntrinsicWidth();
+        if (thumb instanceof StateListDrawable)
+            mThumbDrawable = (StateListDrawable) thumb;
 
         mThumbScroller.setOnClickListener(this);
         mThumbScroller.setOnTouchListener(mThumbTouchListener);
@@ -107,6 +112,9 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
             final int action = ev.getAction();
             switch (action & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN: {
+                    if (mThumbDrawable != null)
+                        mThumbDrawable.selectDrawable(0);
+
                     final float x = ev.getX();
                     if (!(mIsBeingDragged = inThumb((int) x, (int) ev.getY()))) {
                         return false;
@@ -132,6 +140,9 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
+                    if (mThumbDrawable != null)
+                        mThumbDrawable.selectDrawable(1);
+
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
                         mIsBeingDragged = false;
@@ -148,6 +159,9 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
+                    if (mThumbDrawable != null)
+                        mThumbDrawable.selectDrawable(1);
+
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
                         mIsBeingDragged = false;
