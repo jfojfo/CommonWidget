@@ -1,10 +1,16 @@
 <resources>
-    <style name="ToggleViewStyle">
+    <style name="ToggleButtonStyle">
         <item name="backgroundOff">@drawable/mode_grid</item>
         <item name="backgroundOn">@drawable/mode_stack</item>
         <item name="initOn">false</item>
     </style>
 
+    <style name="SlideButtonStyle">
+        <item name="background">@drawable/slide_background</item>
+        <item name="thumb">@drawable/slide_thumb</item>
+        <item name="initOn">false</item>
+    </style>
+    
     <style name="PopupMenuStyle">
         <item name="popupBottom">@drawable/popup_triangle_bottom</item>
         <item name="popupContent">@drawable/popup</item>
@@ -27,5 +33,16 @@
         <item name="android:windowEnterAnimation">@anim/grow_fade_in_from_bottom</item>
         <item name="android:windowExitAnimation">@anim/shrink_fade_out_from_bottom</item>
     </style>
+
+
+    <!-- for testing -->
+    <style name="SlideButtonStyle.Parent">
+        <item name="initOn">true</item>
+    </style>
+
+    <style name="SlideButtonStyle.my" parent="SlideButtonStyle.Parent">
+        <item name="initOn">false</item>
+    </style>
+
 
 </resources>

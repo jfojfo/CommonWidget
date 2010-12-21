@@ -6,26 +6,26 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class ToggleView extends View implements View.OnClickListener {
-    private Drawable mOn, mOff;
-    private boolean mIsOn;
+public class ToggleButton extends View implements View.OnClickListener {
+    protected Drawable mOn, mOff;
+    protected boolean mIsOn;
     
-    public ToggleView(Context context) {
+    public ToggleButton(Context context) {
         super(context);
     }
     
-    public ToggleView(Context context, AttributeSet attrs) {
+    public ToggleButton(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
     
-    public ToggleView(Context context, AttributeSet attrs, int defStyle) {
+    public ToggleButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ToggleView, defStyle, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ToggleButton, defStyle, 0);
 
-        mOff = a.getDrawable(R.styleable.ToggleView_backgroundOff);
-        mOn = a.getDrawable(R.styleable.ToggleView_backgroundOn);
-        mIsOn = a.getBoolean(R.styleable.ToggleView_initOn, false);
+        mOff = a.getDrawable(R.styleable.ToggleButton_backgroundOff);
+        mOn = a.getDrawable(R.styleable.ToggleButton_backgroundOn);
+        mIsOn = a.getBoolean(R.styleable.ToggleButton_initOn, false);
         if (mIsOn && mOn != null)
             setBackgroundDrawable(mOn);
         else if (!mIsOn && mOff != null)

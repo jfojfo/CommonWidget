@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ToggleView">
+    <declare-styleable name="ToggleButton">
         <attr name="backgroundOff" format="reference|color" />
         <attr name="backgroundOn" format="reference|color" />
         <attr name="initOn" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SlideButton">
+        <attr name="background" format="reference|color" />
+        <attr name="thumb" format="reference|color" />
+        <attr name="initOn" />
     </declare-styleable>
 
     <declare-styleable name="PopupMenu">
