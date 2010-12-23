@@ -9,11 +9,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class SlideButton extends FrameLayout implements View.OnClickListener {
+public class SlideButton extends FrameLayout implements View.OnClickListener, Checkable {
     private ImageView mThumb;
     private StateListDrawable mThumbStateListDrawable = null;
     private LinearLayout mThumbScroller;
@@ -225,6 +226,18 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
         int len = widthTrack - mThumb.getMeasuredWidth();
         if (mScrollLength != len) {
             mScrollLength = len;
+            restore();
+        }
+    }
+
+    public boolean isChecked() {
+        return mIsOn;
+    }
+
+    public void setChecked(boolean on) {
+        if (mIsOn != on) {
+            mIsOn = on;
+            refreshDrawableState();
             restore();
         }
     }
