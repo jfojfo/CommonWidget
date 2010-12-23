@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
-import android.util.StateSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,7 +15,7 @@ import android.widget.LinearLayout;
 
 public class SlideButton extends FrameLayout implements View.OnClickListener {
     private ImageView mThumb;
-    private StateListDrawable mThumbDrawable = null;
+    private StateListDrawable mThumbStateListDrawable = null;
     private LinearLayout mThumbScroller;
     private boolean mIsOn;
     private static final int INVALID_POINTER = -1;
@@ -42,7 +41,7 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SlideButton, defStyle, 0);
 
-        Drawable background = a.getDrawable(R.styleable.SlideButton_background);
+        Drawable track = a.getDrawable(R.styleable.SlideButton_track);
         Drawable thumb = a.getDrawable(R.styleable.SlideButton_thumb);
         mIsOn = a.getBoolean(R.styleable.SlideButton_initOn, false);
         a.recycle();
@@ -53,17 +52,18 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                 true);
         mThumb = (ImageView) findViewById(R.id.thumb);
         mThumbScroller = (LinearLayout) findViewById(R.id.thumb_scroller);
-        if (background != null)
-            mThumbScroller.setBackgroundDrawable(background);
+        if (track != null)
+            mThumbScroller.setBackgroundDrawable(track);
         if (thumb != null)
             mThumb.setBackgroundDrawable(thumb);
 
-        background = mThumbScroller.getBackground();
+        track = mThumbScroller.getBackground();
         thumb = mThumb.getBackground();
-        if (background != null && thumb != null)
-            mScrollLength = background.getIntrinsicWidth() - thumb.getIntrinsicWidth();
+        if (track != null && thumb != null)
+            // will be updated in onMeasure()
+            mScrollLength = track.getIntrinsicWidth() - thumb.getIntrinsicWidth();
         if (thumb instanceof StateListDrawable)
-            mThumbDrawable = (StateListDrawable) thumb;
+            mThumbStateListDrawable = (StateListDrawable) thumb;
 
         mThumbScroller.setOnClickListener(this);
         mThumbScroller.setOnTouchListener(mThumbTouchListener);
@@ -112,9 +112,9 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
             final int action = ev.getAction();
             switch (action & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN: {
-                    if (mThumbDrawable != null)
+                    if (mThumbStateListDrawable != null)
 //                        mThumbDrawable.selectDrawable(0);
-                        mThumbDrawable.setState(new int[] { android.R.attr.state_pressed });
+                        mThumbStateListDrawable.setState(new int[] { android.R.attr.state_pressed });
 
                     final float x = ev.getX();
                     if (!(mIsBeingDragged = inThumb((int) x, (int) ev.getY()))) {
@@ -141,9 +141,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (mThumbDrawable != null)
-//                        mThumbDrawable.selectDrawable(1);
-                        mThumbDrawable.setState(new int[] { android.R.attr.state_enabled });
+                    if (mThumbStateListDrawable != null)
+                        mThumbStateListDrawable.setState(new int[] { android.R.attr.state_enabled });
 
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
@@ -151,7 +150,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                         if (mIsBeingSlide) {
                             ret = true;
                             int origPos = mIsOn ? mScrollLength : 0;
-                            if (Math.abs(mScrollPos - origPos) > Math.abs(mScrollLength / 3))
+                            int slop = 0; //Math.abs(mScrollLength / 3)
+                            if (Math.abs(mScrollPos - origPos) > slop)
                                 toggle();
                             else
                                 restore();
@@ -161,9 +161,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
-                    if (mThumbDrawable != null)
-//                        mThumbDrawable.selectDrawable(1);
-                        mThumbDrawable.setState(new int[] { android.R.attr.state_enabled });
+                    if (mThumbStateListDrawable != null)
+                        mThumbStateListDrawable.setState(new int[] { android.R.attr.state_enabled });
 
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
@@ -201,5 +200,33 @@ public class SlideButton extends FrameLayout implements View.OnClickListener {
                 || x < child.getLeft() || x >= child.getRight());
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        
+        int widthTrack = mThumbScroller.getMeasuredWidth();
+        int widthTrackOrig = mThumbScroller.getBackground().getIntrinsicWidth();
+        int widthThumbOrig = mThumb.getBackground().getIntrinsicWidth();
+        int widthThumb = widthThumbOrig;
+        int heightThumb = mThumb.getMeasuredHeight();
+        if (widthTrackOrig > 0 && widthThumbOrig > 0) {
+            float ratio = (float)widthTrack / widthTrackOrig;
+            widthThumb = Math.round(widthThumbOrig * ratio);
+        }
+        else
+            widthThumb = widthTrack / 2 + 1;
+        
+        int thumbWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec, 0, widthThumb);
+        int thumbHeightMeasureSpec =
+            MeasureSpec.makeMeasureSpec(heightThumb, MeasureSpec.EXACTLY);
+        
+        mThumb.measure(thumbWidthMeasureSpec, thumbHeightMeasureSpec);
+        
+        int len = widthTrack - mThumb.getMeasuredWidth();
+        if (mScrollLength != len) {
+            mScrollLength = len;
+            restore();
+        }
+    }
 
 }

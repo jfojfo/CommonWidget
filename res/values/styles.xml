@@ -1,12 +1,12 @@
 <resources>
     <style name="ToggleButtonStyle">
-        <item name="backgroundOff">@drawable/mode_grid</item>
-        <item name="backgroundOn">@drawable/mode_stack</item>
+        <item name="backgroundOff">@drawable/toggle_on</item>
+        <item name="backgroundOn">@drawable/toggle_off</item>
         <item name="initOn">false</item>
     </style>
 
     <style name="SlideButtonStyle">
-        <item name="background">@drawable/slide_background</item>
+        <item name="track">@drawable/slide_track</item>
         <item name="thumb">@drawable/slide_thumb</item>
         <item name="initOn">false</item>
     </style>

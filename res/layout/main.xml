@@ -4,49 +4,98 @@
 	android:id="@+id/root"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+	
 	<TextView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/hello" />
-	<Button android:text="TabBottom" android:id="@+id/Button01"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-	<Button android:text="TabHeader" android:id="@+id/Button02"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-	<Button android:text="PopupMenu" android:id="@+id/Button03"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-	<Button android:text="test" android:id="@+id/Button04"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-	<com.jfo.common.ToggleButton android:id="@+id/toggle"
-		common:backgroundOn="@drawable/toggle_on" common:backgroundOff="@drawable/toggle_off"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		common:initOn="false" />
-	<com.jfo.common.SlideButton android:id="@+id/slidebutton"
-	    common:background="@drawable/slide_background"
-	    common:thumb="@drawable/slide_thumb"
-	    common:initOn="true"
-		android:layout_width="wrap_content" android:layout_height="wrap_content" />
-		
-		
-<LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="50dip"
-    android:background="#000088"
-    android:gravity="center"
-    >
-    <ImageView
-        android:background="@drawable/ic_tab_new"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-    />
-    <TextView
-        android:text="jfojfojfojfo"
-        android:textColor="#00FF00"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip"
-    />
-</LinearLayout>
 
+	<ScrollView android:id="@+id/ScrollView01" android:layout_width="fill_parent" android:layout_height="wrap_content">
+	<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+	
+		<Button android:text="TabBottom" android:id="@+id/Button01"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		<Button android:text="TabHeader" android:id="@+id/Button02"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		<Button android:text="PopupMenu" android:id="@+id/Button03"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		<Button android:text="test" android:id="@+id/Button04"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		
+		<!-- ToggleButton -->
+		<TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dip"
+            android:text="ToggleButton" />
+		<com.jfo.common.ToggleButton android:id="@+id/toggle"
+			common:backgroundOn="@drawable/toggle_on"
+			common:backgroundOff="@drawable/toggle_off"
+			common:initOn="false"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+	    <com.jfo.common.ToggleButton android:id="@+id/toggle"
+	        common:backgroundOn="@drawable/toggle_on"
+	        common:backgroundOff="@drawable/toggle_off"
+	        common:initOn="true"
+	        android:layout_width="100dip" android:layout_height="20dip" />
+	    <com.jfo.common.ToggleButton android:id="@+id/toggle"
+	        common:backgroundOn="#0000FF"
+	        common:backgroundOff="#FF0000"
+	        common:initOn="true"
+	        android:layout_width="100dip" android:layout_height="20dip" />
+        <com.jfo.common.ToggleButton android:id="@+id/toggle"
+            style="@style/ToggleButtonStyle"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <com.jfo.common.ToggleButton android:id="@+id/toggle"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            
+        <!-- SlideButton -->
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dip"
+            android:text="SlideButton" />
+	    <com.jfo.common.SlideButton android:id="@+id/slidebutton"
+	        common:track="@drawable/slide_track"
+	        common:thumb="@drawable/slide_thumb"
+	        common:initOn="true"
+	        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+	    <com.jfo.common.SlideButton android:id="@+id/slidebutton"
+	        common:track="@drawable/slide_track"
+	        common:thumb="@drawable/slide_thumb"
+	        common:initOn="false"
+	        android:layout_width="200dip" android:layout_height="40dip" />
+		<com.jfo.common.SlideButton android:id="@+id/slidebutton"
+		    common:track="#0000FF"
+		    common:thumb="#FF0000"
+		    common:initOn="true"
+			android:layout_width="200dip" android:layout_height="40dip" />
+        <com.jfo.common.SlideButton android:id="@+id/slidebutton"
+            style="@style/SlideButtonStyle"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <com.jfo.common.SlideButton android:id="@+id/slidebutton"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			
+	
+        <!-- test -->
+		<LinearLayout
+		    android:orientation="horizontal"
+		    android:layout_width="wrap_content"
+		    android:layout_height="50dip"
+		    android:background="#000088"
+		    android:gravity="center"
+		    >
+		    <ImageView
+		        android:background="@drawable/ic_tab_new"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		    />
+		    <TextView
+		        android:text="jfojfojfojfo"
+		        android:textColor="#00FF00"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:textSize="16sp"
+		        android:paddingLeft="6dip"
+		        android:paddingRight="6dip"
+		    />
+		</LinearLayout>
 
+    </LinearLayout></ScrollView>
 </LinearLayout>

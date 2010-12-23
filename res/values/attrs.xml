@@ -7,7 +7,7 @@
     </declare-styleable>
 
     <declare-styleable name="SlideButton">
-        <attr name="background" format="reference|color" />
+        <attr name="track" format="reference|color" />
         <attr name="thumb" format="reference|color" />
         <attr name="initOn" />
     </declare-styleable>

@@ -45,8 +45,12 @@ public class ToggleButton extends View implements View.OnClickListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Drawable d = mIsOn ? mOn : mOff;
-        int widthSize = resolveSize(d.getIntrinsicWidth(), widthMeasureSpec);
-        int heightSize = resolveSize(d.getIntrinsicHeight(), heightMeasureSpec);
+        int widthSize = 0;
+        int heightSize = 0;
+        if (d != null) {
+            widthSize = resolveSize(d.getIntrinsicWidth(), widthMeasureSpec);
+            heightSize = resolveSize(d.getIntrinsicHeight(), heightMeasureSpec);
+        }
         setMeasuredDimension(widthSize, heightSize);
     }
 }
