@@ -80,6 +80,7 @@
 		    android:layout_height="50dip"
 		    android:background="#000088"
 		    android:gravity="center"
+            android:layout_marginTop="30dip"
 		    >
 		    <ImageView
 		        android:background="@drawable/ic_tab_new"

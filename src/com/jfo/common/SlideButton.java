@@ -28,6 +28,7 @@ public class SlideButton extends FrameLayout implements View.OnClickListener, Ch
     private int mScrollPos = 0;
     private int mTotalMove = 0;
     private static final int THRESHOLD = 6;
+    private OnToggleListener mToggleListener = null;
     
     public SlideButton(Context context) {
         super(context);
@@ -66,8 +67,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener, Ch
         if (thumb instanceof StateListDrawable)
             mThumbStateListDrawable = (StateListDrawable) thumb;
 
-        mThumbScroller.setOnClickListener(this);
-        mThumbScroller.setOnTouchListener(mThumbTouchListener);
+        setOnClickListener(this);
+        setOnTouchListener(mThumbTouchListener);
 
         restore();
     }
@@ -79,6 +80,8 @@ public class SlideButton extends FrameLayout implements View.OnClickListener, Ch
     public void toggle() {
         mIsOn = mIsOn ? false : true;
         slideTo(mIsOn);
+        if (mToggleListener != null)
+            mToggleListener.onToggle(this);
     }
     
     public void restore() {
@@ -121,7 +124,6 @@ public class SlideButton extends FrameLayout implements View.OnClickListener, Ch
                     if (!(mIsBeingDragged = inThumb((int) x, (int) ev.getY()))) {
                         return false;
                     }
-                    mIsBeingDragged = true;
                     mIsBeingSlide = false;
                     mLastMotionX = x;
                     mTotalMove = 0;
@@ -143,16 +145,17 @@ public class SlideButton extends FrameLayout implements View.OnClickListener, Ch
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mThumbStateListDrawable != null)
-                        mThumbStateListDrawable.setState(new int[] { android.R.attr.state_enabled });
+                        mThumbStateListDrawable.setState(new int[] { android.R.attr.state_empty });
 
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
                         mIsBeingDragged = false;
+                        int origPos = mIsOn ? mScrollLength : 0;
+                        int delta = Math.abs(mScrollPos - origPos);
                         if (mIsBeingSlide) {
                             ret = true;
-                            int origPos = mIsOn ? mScrollLength : 0;
                             int slop = 0; //Math.abs(mScrollLength / 3)
-                            if (Math.abs(mScrollPos - origPos) > slop)
+                            if (delta > slop)
                                 toggle();
                             else
                                 restore();
@@ -163,7 +166,7 @@ public class SlideButton extends FrameLayout implements View.OnClickListener, Ch
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     if (mThumbStateListDrawable != null)
-                        mThumbStateListDrawable.setState(new int[] { android.R.attr.state_enabled });
+                        mThumbStateListDrawable.setState(new int[] { android.R.attr.state_empty });
 
                     if (mIsBeingDragged) {
                         mActivePointerId = INVALID_POINTER;
@@ -240,6 +243,22 @@ public class SlideButton extends FrameLayout implements View.OnClickListener, Ch
             refreshDrawableState();
             restore();
         }
+    }
+
+    public void setPressed(boolean pressed) {
+        // check isEnabled first, if not enabled, do not change drawable state
+        // eg: when a preference is disabled, and a click on the preference should
+        //     not cause SlideButton to change drawable state to pressed
+        if (isEnabled())
+            super.setPressed(pressed);
+    }
+
+    public void setOnToggleListener(OnToggleListener l) {
+        mToggleListener = l;
+    }
+    
+    public interface OnToggleListener {
+        void onToggle(SlideButton sb);
     }
 
 }
