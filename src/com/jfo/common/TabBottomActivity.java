@@ -34,7 +34,7 @@ public class TabBottomActivity extends TabActivity {
 
         TabHost.TabSpec tab = mTabHost.newTabSpec("tab1");
         View tabView = LayoutInflater.from(this).inflate(R.layout.tab_bottom_indicator_left, null);
-        ((TextView)tabView.findViewById(android.R.id.title)).setText("tab1");
+        ((TextView)tabView.findViewById(android.R.id.title)).setText("tab1 a long text test");
         ((ImageView)tabView.findViewById(android.R.id.icon)).setImageResource(R.drawable.ic_tab_new);
 
         tab.setIndicator(tabView);
