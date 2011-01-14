@@ -3,7 +3,6 @@ package com.jfo.common;
 import java.lang.ref.WeakReference;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Message;
