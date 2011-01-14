@@ -3,6 +3,7 @@ package com.jfo.common;
 import java.lang.ref.WeakReference;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Message;
@@ -13,8 +14,17 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 public class Toolbar extends FrameLayout {
+    /**
+     * The identifier for the left button.
+     */
     public static final int BUTTON_LEFT = 1;
+    /**
+     * The identifier for the right button.
+     */
     public static final int BUTTON_RIGHT = 2;
+    /**
+     * The identifier when only one button exists.
+     */
     public static final int BUTTON_FULL = 3;
     
     private Button mBtnLeft, mBtnRight, mBtnFull;
@@ -65,33 +75,76 @@ public class Toolbar extends FrameLayout {
         mBtnFull.setOnClickListener(mOnBtnClick);
     }
     
+    /**
+     * Set left button of Toolbar, text & listener.
+     * 
+     * @param text The text to display in left button.
+     * @param listener Callback listener, {@link Toolbar.OnClickListener}.
+     */
     public void setLeftButton(CharSequence text, final OnClickListener listener) {
         setButton(BUTTON_LEFT, text, listener);
     }
     
+    /**
+     * Set right button of Toolbar, text & listener.
+     * 
+     * @param text The text to display in right button.
+     * @param listener Callback listener, {@link Toolbar.OnClickListener}.
+     */
     public void setRightButton(CharSequence text, final OnClickListener listener) {
         setButton(BUTTON_RIGHT, text, listener);        
     }
 
+    /**
+     * Set full button(when only one button exists) of Toolbar, text & listener.
+     * 
+     * @param text The text to display in button.
+     * @param listener Callback listener, {@link Toolbar.OnClickListener}.
+     */
     public void setFullButton(CharSequence text, final OnClickListener listener) {
         setButton(BUTTON_FULL, text, listener);
     }
     
+    /**
+     * Set listener for left button of Toolbar.
+     * 
+     * @param listener Callback listener, {@link Toolbar.OnClickListener}.
+     */
     public void setLeftButton(final OnClickListener listener) {
         CharSequence text = mBtnLeft.getText();
         setButton(BUTTON_LEFT, text, listener);
     }
 
+    /**
+     * Set listener for right button of Toolbar.
+     * 
+     * @param listener Callback listener, {@link Toolbar.OnClickListener}.
+     */
     public void setRightButton(final OnClickListener listener) {
         CharSequence text = mBtnRight.getText();
         setButton(BUTTON_RIGHT, text, listener);        
     }
     
+    /**
+     * Set listener for only one button of Toolbar.
+     * 
+     * @param listener Callback listener, {@link Toolbar.OnClickListener}.
+     */
     public void setFullButton(final OnClickListener listener) {
         CharSequence text = mBtnFull.getText();
         setButton(BUTTON_FULL, text, listener);
     }
     
+    /**
+     * Set the text and listener to be invoked when corresponding button of the toolbar is pressed.
+     * 
+     * @param which Which button to set the text and listener on, can be one of
+     *            {@link Toolbar#BUTTON_LEFT},
+     *            {@link Toolbar#BUTTON_RIGHT}, or
+     *            {@link Toolbar#BUTTON_FULL}
+     * @param text The text to display in the button.
+     * @param listener The {@link Toolbar.OnClickListener} to use.
+     */
     public void setButton(int which, CharSequence text, final OnClickListener listener) {
         if (text == null)
             return;
@@ -130,18 +183,35 @@ public class Toolbar extends FrameLayout {
         mBtnFull.setVisibility(visible[2]);
     }
     
+    /**
+     * @return The left button of Toolbar.
+     */
     public Button getLeftButton() {
         return getButton(BUTTON_LEFT);
     }
     
+    /**
+     * @return The right button of Toolbar.
+     */
     public Button getRightButton() {
         return getButton(BUTTON_RIGHT);
     }
     
+    /**
+     * @return The only one button that exists in Toolbar.
+     */
     public Button getFullButton() {
         return getButton(BUTTON_FULL);
     }
     
+    /**
+     * @param which Which button to return. Can be one of
+     *            {@link Toolbar#BUTTON_LEFT},
+     *            {@link Toolbar#BUTTON_RIGHT}, or
+     *            {@link Toolbar#BUTTON_FULL}
+     * 
+     * @return The corresponding button of Toolbar.
+     */
     public Button getButton(int which) {
         switch (which) {
         case BUTTON_LEFT:
@@ -191,7 +261,18 @@ public class Toolbar extends FrameLayout {
         }
     }
 
+    /**
+     * Interface used to allow the creator of a toolbar to run some code when a
+     * button on the toolbar is clicked.
+     */
     public interface OnClickListener {
+        /**
+         * This method will be invoked when a button in the toolbar is clicked.
+         * 
+         * @param toolbar The toolbar that received the click.
+         * @param which The button that was clicked (
+         * {@link Toolbar#BUTTON_LEFT}, {@link Toolbar#BUTTON_RIGHT}, {@link Toolbar#BUTTON_FULL}).
+         */
         void onClick(Toolbar toolbar, int which);
     }
 }
