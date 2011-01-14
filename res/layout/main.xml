@@ -24,7 +24,8 @@
 		<TextView android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
-            android:text="ToggleButton" />
+            android:text="ToggleButton"
+            android:background="#DFDFEF" />
 		<com.jfo.common.ToggleButton android:id="@+id/toggle"
 			common:backgroundOn="@drawable/toggle_on"
 			common:backgroundOff="@drawable/toggle_off"
@@ -50,7 +51,8 @@
         <TextView android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
-            android:text="SlideButton" />
+            android:text="SlideButton"
+            android:background="#DFDFEF" />
 	    <com.jfo.common.SlideButton android:id="@+id/slidebutton"
 	        common:track="@drawable/slide_track"
 	        common:thumb="@drawable/slide_thumb"
@@ -72,6 +74,21 @@
         <com.jfo.common.SlideButton android:id="@+id/slidebutton"
             android:layout_width="wrap_content" android:layout_height="wrap_content" />
 			
+        <!-- Toolbar -->
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dip"
+            android:text="Toolbar"
+            android:background="#DFDFEF" />
+        <include layout="@layout/toolbar_layout" />
+        <com.jfo.common.Toolbar
+            android:id="@+id/mytoolbar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            common:textLeftButton="Left"
+            common:textRightButton="Right"
+            />
+
 	
         <!-- test -->
 		<LinearLayout

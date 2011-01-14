@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    android:background="@drawable/iw_toolbar_bkg_opaque"
+    >
+	<LinearLayout android:id="@+id/toolbar_btn_container_lr"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="fill_parent"
+	    android:layout_marginTop="6dip"
+	    android:gravity="center"
+	    >
+	    <Button android:id="@+id/toolbar_btn_left"
+	        android:text="@+id/Button01"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/toolbar_btn_left"
+	        android:textColor="@android:color/white"
+	        android:textSize="20sp"
+	        />
+	    <Button android:id="@+id/toolbar_btn_right"
+	        android:text="@+id/Button02"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/toolbar_btn_right"
+	        android:textColor="@android:color/white"
+	        android:textSize="20sp"
+	        />
+	</LinearLayout>
+    <LinearLayout android:id="@+id/toolbar_btn_container"
+        android:layout_width="fill_parent" 
+        android:layout_height="fill_parent"
+        android:layout_marginTop="6dip"
+        android:gravity="center"
+        >
+        <Button android:id="@+id/toolbar_btn"
+            android:text="@+id/Button03"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:background="@drawable/toolbar_btn"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+</RelativeLayout>

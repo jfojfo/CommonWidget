@@ -22,4 +22,10 @@
         <attr name="padding" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="Toolbar">
+        <attr name="textLeftButton" format="reference|string" />
+        <attr name="textRightButton" format="reference|string" />
+        <attr name="textFullButton" format="reference|string" />
+    </declare-styleable>
+
 </resources>

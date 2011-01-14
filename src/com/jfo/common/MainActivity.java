@@ -1,6 +1,7 @@
 package com.jfo.common;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.PopupWindow;
 
 public class MainActivity extends Activity implements OnClickListener {
     Button mBtn1, mBtn2, mBtn3, mBtn4;
+    Toolbar mToolbar;
     
     /** Called when the activity is first created. */
     @Override
@@ -29,6 +31,11 @@ public class MainActivity extends Activity implements OnClickListener {
         mBtn3.setOnClickListener(this);
         mBtn4 = (Button) findViewById(R.id.Button04);
         mBtn4.setOnClickListener(this);
+        
+        mToolbarListener = null;
+        mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
+        mToolbar.setLeftButton(mToolbarListener);
+        mToolbar.setRightButton(mToolbarListener);
     }
 
     public void onClick(View v) {
@@ -62,5 +69,16 @@ public class MainActivity extends Activity implements OnClickListener {
             break;
         }
     }
+    
+    private Toolbar.OnClickListener mToolbarListener = new Toolbar.OnClickListener() {
+
+        public void onClick(Toolbar toolbar, int which) {
+            new AlertDialog.Builder(MainActivity.this)
+            .setMessage(which + " button clicked")
+            .setPositiveButton("OK", null)
+            .show();
+        }
+        
+    };
 
 }
