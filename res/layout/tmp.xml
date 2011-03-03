@@ -6,4 +6,10 @@
 	<ImageView android:id="@+id/ImageView01"
 		android:layout_width="4dip" android:layout_height="4dip"
 		android:background="#FF0000" />
+	<TextView android:text="TextView"
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content" />
+    <Button android:text="Button"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" />
 </LinearLayout>

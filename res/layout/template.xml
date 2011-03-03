@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:common="http://schemas.android.com/apk/res/com.jfo.common"
 	android:id="@+id/root" android:orientation="vertical"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
 	<Button android:text="Button01" android:id="@+id/Button01"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="350dip" android:layout_marginLeft="100dip" />
+
+    <com.jfo.common.Toolbar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        common:textLeftButton="Left Button"
+        common:textRightButton="Right Button"
+        />
 </LinearLayout>

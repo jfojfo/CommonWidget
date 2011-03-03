@@ -19,6 +19,8 @@
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 		<Button android:text="test" android:id="@+id/Button04"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+        <Button android:text="MySlideView" android:id="@+id/Button05"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 		
 		<!-- ToggleButton -->
 		<TextView android:layout_width="fill_parent"
@@ -87,6 +89,25 @@
             android:layout_height="wrap_content"
             common:textLeftButton="Left"
             common:textRightButton="Right"
+            />
+
+        <!-- Background -->
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dip"
+            android:text="Background"
+            android:background="#DFDFEF" />
+        <Button android:text="content_page_round_button_background"
+            android:layout_width="fill_parent"
+            android:layout_height="60dip"
+            android:layout_margin="6dip"
+            android:background="@drawable/content_page_round_button_background"
+            />
+        <Button android:text="content_page_square_button_background"
+            android:layout_width="fill_parent"
+            android:layout_height="60dip"
+            android:layout_margin="6dip"
+            android:background="@drawable/content_page_square_button_background"
             />
 
 	
