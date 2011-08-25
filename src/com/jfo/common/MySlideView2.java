@@ -1,9 +1,9 @@
+//package com.jfo.common;
 package com.jfo.common;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -12,45 +12,38 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
-public class MySlideView extends ViewGroup {
+public class MySlideView2 extends ViewGroup {
 
     private int mMinimumVelocity;
     private int mMaximumVelocity;
     private int mTouchSlop;
     private float mDensityScale;
-    private int mLeftBarWidth;
-    private int mRightBarWidth;
     private int mScreenWidth;
+    private int mTotalWidth;
+    private OnScrollListener mOnScrollListener;
+    private int mLastScrollState = OnScrollListener.SCROLL_STATE_IDLE;
+    private int mCurrChildIndex = -1;
 
-    public MySlideView(Context context) {
+    public interface OnScrollListener {
+        public static int SCROLL_STATE_IDLE = 0;
+        public static int SCROLL_STATE_TOUCH_SCROLL = 1;
+        public static int SCROLL_STATE_FLING = 2;
+
+        public void onScrollStateChanged(MySlideView2 view, int scrollState, int childIndex);
+        public void onScroll(MySlideView2 view, int delta);
+    }
+    
+    public MySlideView2(Context context) {
         this(context, null);
     }
 
-    public MySlideView(Context context, AttributeSet attrs) {
+    public MySlideView2(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MySlideView(Context context, AttributeSet attrs, int defStyle) {
+    public MySlideView2(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
-        
-        LayoutParams params = new LayoutParams(mLeftBarWidth, LayoutParams.MATCH_PARENT);
-        View child = makeView(context);
-        addView(child, params);
-
-        params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        child = makeView(context);
-        addView(child, params);
-
-        params = new LayoutParams(mRightBarWidth, LayoutParams.MATCH_PARENT);
-        child = makeView(context);
-        addView(child, params);
-    }
-
-    private View makeView(Context context) {
-        LayoutInflater inflate = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflate.inflate(R.layout.tmp, null);
-        return v;
     }
 
     private void init(Context context) {
@@ -64,47 +57,91 @@ public class MySlideView extends ViewGroup {
         int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
         screenWidth = screenWidth < screenHeight ? screenWidth : screenHeight;
-        mLeftBarWidth = screenWidth / 2;
-        mRightBarWidth = screenWidth * 2 / 3;
         mScreenWidth = screenWidth;
-
     }
+    
+    public void setOnScrollListener(OnScrollListener onScrollListener) {
+        mOnScrollListener = onScrollListener;
+    }
+
+    public OnScrollListener getOnScrollListener() {
+        return mOnScrollListener;
+    }
+
+    public void reportScrollStateChange(int newState) {
+        if (newState != mLastScrollState) {
+            mCurrChildIndex = getScrollX() / mScreenWidth;
+            if (mOnScrollListener != null) {
+                mOnScrollListener.onScrollStateChanged(this, newState, mCurrChildIndex);
+                mLastScrollState = newState;
+            }
+        }
+    }
+    
+    public void scrollToPreviousChild() {
+        int index = getCurrentChildIndex();
+        if (index > 0) {
+            setCurrentChildIndex(mCurrChildIndex - 1);
+        }
+    }
+
+    public void scrollToNextChild() {
+        int index = getCurrentChildIndex();
+        if (index >= 0 && index < getChildCount() - 1) {
+            setCurrentChildIndex(mCurrChildIndex + 1);
+        }
+    }
+
+    public void scrollToChild(int index) {
+        if (index >= 0 && index < getChildCount() - 1) {
+            setCurrentChildIndex(index);
+        }
+    }
+
+    public int getCurrentChildIndex() {
+        return mCurrChildIndex;
+    }
+
+    public void setCurrentChildIndex(int index) {
+        if (index >=0 && index < getChildCount()) {
+            if (mCurrChildIndex != index) {
+                mCurrChildIndex = index;
+                scrollTo(mScreenWidth * mCurrChildIndex, 0);
+            }
+        }
+    }
+
+    public void reset() {
+        removeAllViews();
+        scrollTo(0, 0);
+    }
+
     
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 //        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int width = 0;
-        int height = getMeasuredHeight();
-        int count = getChildCount();
+        int height = 0;
 
         // Find out how big everyone wants to be
-//        measureChildren(widthMeasureSpec, heightMeasureSpec);
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
 
+        int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (i == 0) {
-                int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        mLeftBarWidth, MeasureSpec.EXACTLY);
-                child.measure(childWidthMeasureSpec, heightMeasureSpec);
-                width += child.getMeasuredWidth();
-            }
-            else if (i == 2) {
-                int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        mRightBarWidth, MeasureSpec.EXACTLY);
-                child.measure(childWidthMeasureSpec, heightMeasureSpec);
-                width += child.getMeasuredWidth();
-            }
-            else {
-                child.measure(widthMeasureSpec, heightMeasureSpec);
-                width += child.getMeasuredWidth();
-            }
+            width += child.getMeasuredWidth();
+            height = Math.max(height, child.getMeasuredHeight());
         }
+        mTotalWidth = width;
+        
+        if (count > 0 && mCurrChildIndex == -1)
+            mCurrChildIndex = 0;
         
 //        scrollTo(mLeftBarWidth, 0);
-
+        
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),
-                resolveSize(height, MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY)));
+                resolveSize(height, heightMeasureSpec));
     }
 
     @Override
@@ -226,6 +263,8 @@ public class MySlideView extends ViewGroup {
             }
             case MotionEvent.ACTION_MOVE: {
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                if (pointerIndex == -1)
+                    break;
                 final int x = (int) ev.getX(pointerIndex);
                 int deltaX = x - mMotionX;
                 
@@ -247,6 +286,14 @@ public class MySlideView extends ViewGroup {
             }
             case MotionEvent.ACTION_UP: {
                 switch (mTouchMode) {
+                    case TOUCH_MODE_DOWN:
+                    case TOUCH_MODE_TAP:
+                    case TOUCH_MODE_DONE_WAITING:
+                        mTouchMode = TOUCH_MODE_REST;
+                        if (!performClick())
+                            ((View) this.getParent()).performClick();
+                        slideToScreenBound();
+                        break;
                     case TOUCH_MODE_SCROLL: {
                         final VelocityTracker velocityTracker = mVelocityTracker;
                         velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
@@ -261,17 +308,32 @@ public class MySlideView extends ViewGroup {
                             mBounceRunnable.start(overstep);
                         } else {
                             if (Math.abs(initialVelocity) > mMinimumVelocity) {
+                                int scrollX = getScrollX();
+                                int remain = scrollX % mScreenWidth;
+                                int distance;
+                                if (initialVelocity < 0) // sroll content left
+                                    distance = mScreenWidth - remain;
+                                else
+                                    distance = -remain;
+
                                 if (mFlingRunnable == null) {
                                     mFlingRunnable = new FlingRunnable();
                                 }
-                                mFlingRunnable.start(-initialVelocity);
+//                                mFlingRunnable.start(-initialVelocity);
+                                mFlingRunnable.startScroll(distance, 600);
                             } else {
-                                mTouchMode = TOUCH_MODE_REST;
+                                slideToScreenBound();
                             }
                         }
                         break;
                     }
+                    default:
+                        break;
                 }
+                break;
+            }
+            case MotionEvent.ACTION_CANCEL: {
+                slideToScreenBound();
                 break;
             }
         }
@@ -286,6 +348,7 @@ public class MySlideView extends ViewGroup {
             mTouchMode = TOUCH_MODE_SCROLL;
 //            mMotionCorrection = deltaY;
 //            requestDisallowInterceptTouchEvent(true);
+            reportScrollStateChange(OnScrollListener.SCROLL_STATE_TOUCH_SCROLL);
             return true;
         }
         return false;
@@ -306,9 +369,12 @@ public class MySlideView extends ViewGroup {
         }
 
         scrollBy(deltaX, 0);
+        if (mOnScrollListener != null)
+            mOnScrollListener.onScroll(this, deltaX);
+        
         int scrollX = getScrollX();
         
-        return scrollX <= 0 || scrollX >= mLeftBarWidth + mRightBarWidth;
+        return scrollX <= 0 || scrollX >= mTotalWidth - mScreenWidth;
     }
     
     private int getOverstep() {
@@ -316,8 +382,8 @@ public class MySlideView extends ViewGroup {
         int overstep = 0;
         if (scrollX < 0)
             overstep = -scrollX;
-        else if (scrollX > mLeftBarWidth + mRightBarWidth)
-            overstep = mLeftBarWidth + mRightBarWidth - scrollX;
+        else if (scrollX > mTotalWidth - mScreenWidth)
+            overstep = mTotalWidth - mScreenWidth - scrollX;
         return overstep;
     }
 
@@ -350,6 +416,27 @@ public class MySlideView extends ViewGroup {
 //        post(mClearScrollingCache);
 //    }
 
+    private int getBoundDistance() {
+        int scrollX = getScrollX();
+        int screen = scrollX / mScreenWidth;
+        int remain = scrollX % mScreenWidth;
+        int distance;
+        if (remain < mScreenWidth / 2)
+            distance = -remain;
+        else
+            distance = mScreenWidth - remain;
+        
+        return distance;
+    }
+    
+    private void slideToScreenBound() {
+        int distance = getBoundDistance();
+        if ( mBounceRunnable == null ) {
+            mBounceRunnable = new BounceRunnable();
+        }
+        mBounceRunnable.start(distance);
+    }
+    
     /**
      * Responsible for fling behavior. Use {@link #start(int)} to
      * initiate a fling. Each frame of the fling is handled in {@link #run()}.
@@ -383,6 +470,11 @@ public class MySlideView extends ViewGroup {
             post(this);
         }
 
+        /**
+         * 
+         * @param distance Horizontal distance to travel. Positive numbers will scroll the content to the left.
+         * @param duration
+         */
         void startScroll(int distance, int duration) {
             int initialX = distance < 0 ? Integer.MAX_VALUE : 0;
             mLastFlingX = initialX;
@@ -394,12 +486,19 @@ public class MySlideView extends ViewGroup {
         private void endFling() {
             mTouchMode = TOUCH_MODE_REST;
 
-//            reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
+            reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
 //            clearScrollingCache();
 
             removeCallbacks(this);
         }
 
+        private void endFlingIfNeeded() {
+            if (getBoundDistance() != 0)
+                slideToScreenBound();
+            else
+                endFling();
+        }
+        
         public void run() {
             switch (mTouchMode) {
                 case TOUCH_MODE_FLING: {
@@ -441,13 +540,19 @@ public class MySlideView extends ViewGroup {
                             if (mBrakeRunnable == null) {
                                 mBrakeRunnable = new BrakeRunnable();
                             }
-                            mBrakeRunnable.start(leftVelocity,
-                                    (getWidth() - getPaddingRight() - getPaddingLeft() - 1) / 2,
-                                    overrun);
+                            
+                            if (overrun != 0)
+                                mBrakeRunnable.start(leftVelocity,
+                                        (getWidth() - getPaddingRight() - getPaddingLeft() - 1) / 2,
+                                        overrun);
+                            else
+                                endFlingIfNeeded();
                         } else {
-                            endFling();
+                            endFlingIfNeeded();
                         }
                     }
+                    else
+                        endFlingIfNeeded();
                     break;
                 }
                 default:
@@ -469,6 +574,11 @@ public class MySlideView extends ViewGroup {
             mScroller = new Scroller(getContext());
         }
         
+        /**
+         * 
+         * @param distance distance > 0: bounce back to the left end;
+         *              distance < 0: bounce back to the right end.
+         */
         public void start(int distance) {
             int duration = Math.abs(distance)*mBounceDurationScaler + mBounceDuration;
 
@@ -484,7 +594,7 @@ public class MySlideView extends ViewGroup {
 
         private void endFling() {
             mTouchMode = TOUCH_MODE_REST;
-//            reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
+            reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
 //            clearScrollingCache();
         }
 
@@ -594,7 +704,7 @@ public class MySlideView extends ViewGroup {
 
         private void endFling() {
             mTouchMode = TOUCH_MODE_REST;
-//            reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
+            reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
 //            clearScrollingCache();
         }
 
@@ -639,5 +749,6 @@ public class MySlideView extends ViewGroup {
             }
         }
     }
+
 
 }

@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements OnClickListener {
         mBtn5 = (Button) findViewById(R.id.Button05);
         mBtn5.setOnClickListener(this);
 
-        mBtn5.performClick();
+//        mBtn5.performClick();
         
         mToolbarListener = null;
         mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
