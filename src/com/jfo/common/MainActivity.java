@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 
 public class MainActivity extends Activity implements OnClickListener {
-    Button mBtn1, mBtn2, mBtn3, mBtn4, mBtn5;
+    Button mBtn1, mBtn2, mBtn3, mBtn4, mBtn5, mBtn6;
     Toolbar mToolbar;
     
     /** Called when the activity is first created. */
@@ -33,6 +33,8 @@ public class MainActivity extends Activity implements OnClickListener {
         mBtn4.setOnClickListener(this);
         mBtn5 = (Button) findViewById(R.id.Button05);
         mBtn5.setOnClickListener(this);
+        mBtn6 = (Button) findViewById(R.id.Button06);
+        mBtn6.setOnClickListener(this);
 
 //        mBtn5.performClick();
         
@@ -71,6 +73,12 @@ public class MainActivity extends Activity implements OnClickListener {
         }
         case R.id.Button05: {
             Intent intent = new Intent(this, MySlideViewActivity.class);
+            startActivity(intent);
+            finish();
+            break;
+        }
+        case R.id.Button06: {
+            Intent intent = new Intent(this, ViewPagerActivity.class);
             startActivity(intent);
             finish();
             break;
