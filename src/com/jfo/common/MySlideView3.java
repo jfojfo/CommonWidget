@@ -1,11 +1,8 @@
 package plugin.fr.widget;
 
-import com.libs.utils.LogUtil;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -102,11 +99,11 @@ public class MySlideView3 extends ViewGroup {
     }
     
     public void reportScrollStatePassHalf(int newState, int index) {
-        mCurrHalfChildIndex = index;
         mLastScrollState = newState;
         if (mOnScrollListener != null && mCurrHalfChildIndex != index) {
             mOnScrollListener.onScrollStateChanged(this, newState, index);
         }
+        mCurrHalfChildIndex = index;
     }
 
     public void reportScrollStatePassWhole(int newState, int index) {
@@ -445,6 +442,7 @@ public class MySlideView3 extends ViewGroup {
                         } else {
                             if (Math.abs(initialVelocity) > mMinimumVelocity) {
                                 final int distance = getFlingDistance2(initialVelocity);
+//                                distance += initialVelocity > 0 ? -16 : 16;
                                 if (mFlingRunnable == null) {
                                     mFlingRunnable = new FlingRunnable();
                                 }
@@ -530,7 +528,10 @@ public class MySlideView3 extends ViewGroup {
             index = params.currChildIndex + 1;
         else if (deltaX < 0 && params.scrollXCenter < params.boundLeft)
             index = params.currChildIndex - 1;
-        if (index >= 0 && index != mCurrHalfChildIndex)
+        else if ((deltaX > 0 && params.scrollXCenter > params.boundLeft) ||
+                (deltaX < 0 && params.scrollXCenter < params.boundRight))
+            index = params.currChildIndex;
+        if (index >= 0 && index < getChildCount() && index != mCurrHalfChildIndex)
             reportScrollStatePassHalf(OnScrollListener.SCROLL_STATE_PASS_HALF, index);
 
         index = -1;
@@ -597,13 +598,30 @@ public class MySlideView3 extends ViewGroup {
         int distance = 0;
 
         Params params = new Params();
-        if (velocity < 0 && params.widthRight >= 0) { // scroll content to the left
+//        if (velocity < 0 && params.widthRight >= 0) { // scroll content to the left
+//            if (params.scrollXCenter >= params.center)
+//                distance = params.centerRight - params.scrollXCenter;
+//            else
+//                distance = params.center - params.scrollXCenter;
+//        }
+//        else if (velocity > 0 && params.widthLeft >= 0) {
+//            if (params.scrollXCenter <= params.center)
+//                distance = params.centerLeft - params.scrollXCenter;
+//            else
+//                distance = params.center - params.scrollXCenter;
+//        }
+        // fix bug:
+        //   when mCurrChildIndex == 0 and screenWidth = 480px,
+        //   your finger touch the child view and move left 400px,
+        //   then fling to the right. 
+        //   The above will return 0 distance since params.widthLeft == -1
+        if (velocity < 0) { // scroll content to the left
             if (params.scrollXCenter >= params.center)
                 distance = params.centerRight - params.scrollXCenter;
             else
                 distance = params.center - params.scrollXCenter;
         }
-        else if ((velocity > 0 && params.widthLeft >= 0)) {
+        else if (velocity > 0) {
             if (params.scrollXCenter <= params.center)
                 distance = params.centerLeft - params.scrollXCenter;
             else
