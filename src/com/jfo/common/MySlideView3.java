@@ -28,7 +28,8 @@ public class MySlideView3 extends ViewGroup {
     private int mCurrChildX = 0;
     private int mChildInterval = 0;
     private int mVelocity = 150;
-    
+    private boolean mFirstLayout = true;
+
     public interface OnScrollListener {
         public static final int SCROLL_STATE_IDLE = 0;
         public static final int SCROLL_STATE_TOUCH_SCROLL = 1;
@@ -128,11 +129,30 @@ public class MySlideView3 extends ViewGroup {
         }
     }
 
-    public void scrollToChild(int index) {
+    public void jumpToChild(int index) {
         if (index >= 0 && index < getChildCount()) {
             setCurrentChildIndex(index);
             int width = getChildAt(index).getWidth();
             scrollTo(mCurrChildX + (width - mScreenWidth) / 2, 0);
+        }
+    }
+
+    public void scrollToChild(int index) {
+        if (index >= 0 && index < getChildCount()) {
+            final int oldIndex = getCurrentChildIndex();
+            final int startPos = getScrollX();
+            setCurrentChildIndex(index);
+            final int width = getChildAt(index).getWidth();
+            final int endPos = mCurrChildX + (width - mScreenWidth) / 2;
+            final int distance = endPos - startPos;
+            setCurrentChildIndex(oldIndex);
+
+            if (mFlingRunnable == null) {
+                mFlingRunnable = new FlingRunnable();
+            } else {
+                mFlingRunnable.endFling();
+            }
+            mFlingRunnable.startScroll(distance, mVelocity);
         }
     }
 
@@ -228,7 +248,10 @@ public class MySlideView3 extends ViewGroup {
             }
         }
         mTotalWidth = childLeft - interval;
-        scrollToChild(getCurrentChildIndex());
+        if (mFirstLayout) {
+            jumpToChild(getCurrentChildIndex());
+            mFirstLayout = false;
+        }
     }
 
 
@@ -484,9 +507,9 @@ public class MySlideView3 extends ViewGroup {
         }
         return false;
     }
-    
-    
-    
+
+
+
     public class Params {
         final int scrollX = getScrollX();
         final int scrollXCenter = scrollX + mScreenWidth / 2;
