@@ -1,4 +1,4 @@
-package plugin.fr.widget;
+package com.jfo.common;
 
 import com.libs.utils.LogUtil;
 
@@ -14,6 +14,15 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
+/**
+ * 
+ * 1. uncomment "if (xMoved && !yMoved)" if y axis scroll dominated is desired.
+ * 2. set mOverstepEffect to false if the first & last children are not allowed
+ *    to scroll out of the SlideView's range. (note: when the first child's width
+ *    is less then the screen's width, it is *not* out of the SlideView's range 
+ *    when its center is aligned with the screen's center) 
+ *
+ */
 public class MySlideView3 extends ViewGroup {
     private final String TAG = MySlideView3.class.getSimpleName();
 
@@ -314,7 +323,7 @@ public class MySlideView3 extends ViewGroup {
          * motion.
          */
         final int action = ev.getAction();
-        LogUtil.d(TAG, "===>" + action + ",mTouchMode:" + mTouchMode);
+        LogUtil.d(TAG, "===>action:" + action + ",mTouchMode:" + mTouchMode);
         if ((action == MotionEvent.ACTION_MOVE) && (mTouchMode != TOUCH_MODE_REST && mTouchMode != TOUCH_MODE_DOWN)) {
             return true;
         }
@@ -333,7 +342,7 @@ public class MySlideView3 extends ViewGroup {
                 
                 LogUtil.d(TAG, "xDiff:" + xDiff + ",yDiff:" + yDiff + "(" + touchSlop + ")");
 
-                if (xMoved && !yMoved) {
+//                if (xMoved && !yMoved) {
                     if (xMoved) {
                         // Scroll if the user moved far enough along the X axis
                         LogUtil.d(TAG, "xMoved...");
@@ -342,7 +351,7 @@ public class MySlideView3 extends ViewGroup {
                         onTouchEvent(ev);
                         return true;
                     }
-                }
+//                }
                 break;
             }
 
@@ -394,6 +403,7 @@ public class MySlideView3 extends ViewGroup {
 
     private boolean mBounceEffect = true; 
     private boolean mSpringModel = true;
+    private boolean mOverstepEffect = false;
 
     private int mBounceDurationScaler = 0;
     private int mBounceDuration = 120;
@@ -530,8 +540,10 @@ public class MySlideView3 extends ViewGroup {
         final int boundLeft = mCurrChildX;
         final int boundRight = mCurrChildX + width;
         final int center = mCurrChildX + width / 2;
-        final int centerLeft = widthLeft < 0 ? Integer.MIN_VALUE : mCurrChildX - widthLeft + widthLeft / 2 - getChildInterval();
-        final int centerRight = widthRight < 0 ? Integer.MAX_VALUE : mCurrChildX + width + widthRight / 2 + getChildInterval();
+//        final int centerLeft = widthLeft < 0 ? Integer.MIN_VALUE : mCurrChildX - widthLeft + widthLeft / 2 - getChildInterval();
+//        final int centerRight = widthRight < 0 ? Integer.MAX_VALUE : mCurrChildX + width + widthRight / 2 + getChildInterval();
+        final int centerLeft = widthLeft < 0 ? center : mCurrChildX - widthLeft + widthLeft / 2 - getChildInterval();
+        final int centerRight = widthRight < 0 ? center : mCurrChildX + width + widthRight / 2 + getChildInterval();
     }
     /**
      * Track a motion scroll
@@ -547,11 +559,19 @@ public class MySlideView3 extends ViewGroup {
             return true;
         }
 
+        scrollBy(deltaX, 0);
+        
+        if (!mOverstepEffect) {
+            int d = getOverstep2();
+            if (d != 0) {
+                scrollBy(d, 0);
+                deltaX = d + deltaX;
+            }
+        }
+
         if (mOnScrollListener != null)
             mOnScrollListener.onScroll(this, deltaX);
         
-        scrollBy(deltaX, 0);
-
         Params params = new Params();
 
         int index = -1;
