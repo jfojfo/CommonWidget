@@ -1,5 +1,7 @@
 package plugin.fr.widget;
 
+import com.libs.utils.LogUtil;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -312,14 +314,13 @@ public class MySlideView3 extends ViewGroup {
          * motion.
          */
         final int action = ev.getAction();
-        if ((action == MotionEvent.ACTION_MOVE) && (mTouchMode != TOUCH_MODE_REST)) {
+        LogUtil.d(TAG, "===>" + action + ",mTouchMode:" + mTouchMode);
+        if ((action == MotionEvent.ACTION_MOVE) && (mTouchMode != TOUCH_MODE_REST && mTouchMode != TOUCH_MODE_DOWN)) {
             return true;
         }
 
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE: {
-                onTouchEvent(ev);
-                
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 final int x = (int) ev.getX(pointerIndex);
                 final int y = (int) ev.getY(pointerIndex);
@@ -330,9 +331,15 @@ public class MySlideView3 extends ViewGroup {
                 boolean xMoved = xDiff > touchSlop;
                 boolean yMoved = yDiff > touchSlop;
                 
+                LogUtil.d(TAG, "xDiff:" + xDiff + ",yDiff:" + yDiff + "(" + touchSlop + ")");
+
                 if (xMoved && !yMoved) {
                     if (xMoved) {
                         // Scroll if the user moved far enough along the X axis
+                        LogUtil.d(TAG, "xMoved...");
+                        // call onTouchEvent after getting xMoved & yMoved
+                        // since mMotionX & mMotionY will change in onTouchEvent()
+                        onTouchEvent(ev);
                         return true;
                     }
                 }
@@ -495,8 +502,9 @@ public class MySlideView3 extends ViewGroup {
         return true;
     }
     
-    private boolean startScrollIfNeeded(int deltaY) {
-        final int distance = Math.abs(deltaY);
+    private boolean startScrollIfNeeded(int deltaX) {
+        LogUtil.d(TAG, "startScrollIfNeeded:deltaX:" + deltaX + "(" + mTouchSlop + ")");
+        final int distance = Math.abs(deltaX);
         if (distance > mTouchSlop) {
 //            createScrollingCache();
             mTouchMode = TOUCH_MODE_SCROLL;
