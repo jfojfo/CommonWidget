@@ -47,6 +47,8 @@ public class MySlideView3 extends ViewGroup {
         public static final int SCROLL_STATE_FLING = 2;
         public static final int SCROLL_STATE_PASS_HALF = 3;
         public static final int SCROLL_STATE_PASS_WHOLE = 4;
+        public static final int SCROLL_STATE_SCROLL_OVER_LAST_CHILD = 5;
+        public static final int SCROLL_STATE_SCROLL_OVER_FIRST_CHILD = 6;
 
         public void onScrollStateChanged(MySlideView3 view, int scrollState, int childIndex);
         public void onScroll(MySlideView3 view, int delta);
@@ -561,11 +563,16 @@ public class MySlideView3 extends ViewGroup {
 
         scrollBy(deltaX, 0);
         
+        int overScrollState = OnScrollListener.SCROLL_STATE_IDLE;
         if (!mOverstepEffect) {
             int d = getOverstep2();
             if (d != 0) {
                 scrollBy(d, 0);
                 deltaX = d + deltaX;
+                if (mTouchMode == TOUCH_MODE_SCROLL) {
+                    overScrollState = d > 0 ? OnScrollListener.SCROLL_STATE_SCROLL_OVER_FIRST_CHILD
+                            : OnScrollListener.SCROLL_STATE_SCROLL_OVER_LAST_CHILD;
+                }
             }
         }
 
@@ -592,6 +599,9 @@ public class MySlideView3 extends ViewGroup {
             index = params.currChildIndex - 1;
         if (index >= 0 && index != params.currChildIndex)
             reportScrollStatePassWhole(OnScrollListener.SCROLL_STATE_PASS_WHOLE, index);
+
+        if (overScrollState != OnScrollListener.SCROLL_STATE_IDLE)
+            reportScrollStateChange(overScrollState);
         
         return getOverstep2() != 0;
     }
