@@ -332,7 +332,13 @@ public class MySlideView3 extends ViewGroup {
 
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE: {
+                LogUtil.d(TAG, "mActivePointerId:" + mActivePointerId);
+                if (mActivePointerId == INVALID_POINTER)
+                    return false;
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                LogUtil.d(TAG, "pointerIndex:" + pointerIndex);
+                if (pointerIndex < 0 || pointerIndex >= ev.getPointerCount())
+                    return false;
                 final int x = (int) ev.getX(pointerIndex);
                 final int y = (int) ev.getY(pointerIndex);
                 final int xDiff = (int) Math.abs(x - mMotionX);
