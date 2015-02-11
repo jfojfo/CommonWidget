@@ -2,3 +2,4 @@
 .project
 gen/
 bin/
+.settings
