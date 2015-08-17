@@ -45,46 +45,33 @@ public class MainActivity extends Activity implements OnClickListener {
     }
 
     public void onClick(View v) {
-        switch (v.getId()) {
-        case R.id.Button01: {
+        int i = v.getId();
+        if (i == R.id.Button01) {
             Intent intent = new Intent(this, TabBottomActivity.class);
             startActivity(intent);
             finish();
-            break;
-        }
-        case R.id.Button02: {
+        } else if (i == R.id.Button02) {
             Intent intent = new Intent(this, TabHeaderActivity.class);
             startActivity(intent);
             finish();
-            break;
-        }
-        case R.id.Button03: {
+        } else if (i == R.id.Button03) {
             Intent intent = new Intent(this, PopupMenuActivity.class);
             startActivity(intent);
             finish();
-            break;
-        }
-        case R.id.Button04: {
-            LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        } else if (i == R.id.Button04) {
+            LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View t = inflater.inflate(R.layout.tmp, null);
             PopupWindow w = new PopupWindow(t, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             w.showAtLocation(v, Gravity.NO_GRAVITY, 0, 475);
-            break;
-        }
-        case R.id.Button05: {
+        } else if (i == R.id.Button05) {
             Intent intent = new Intent(this, MySlideViewActivity.class);
             startActivity(intent);
             finish();
-            break;
-        }
-        case R.id.Button06: {
+        } else if (i == R.id.Button06) {
             Intent intent = new Intent(this, ViewPagerActivity.class);
             startActivity(intent);
             finish();
-            break;
-        }
-        default:
-            break;
+        } else {
         }
     }
     
