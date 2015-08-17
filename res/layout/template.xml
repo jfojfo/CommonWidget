@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:common="http://schemas.android.com/apk/res/com.jfo.common"
+    xmlns:common="http://schemas.android.com/apk/lib/com.jfo.common"
 	android:id="@+id/root" android:orientation="vertical"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
